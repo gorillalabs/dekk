@@ -6,7 +6,8 @@
 (defn repo []
   (git/load-repo globals/dataRepo))
 
-(defn add-card [cards card]
+(defn add-card [list card]
+  (assoc card :idList (list-id list))
   (json-fs/write-cards
     (conj cards card))
   (git/git-add (repo) (str "/" globals/cards))

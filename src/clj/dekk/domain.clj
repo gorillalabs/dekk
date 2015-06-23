@@ -4,6 +4,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Data model
 
+(defprotocol listId
+  (list-id [item]))
+
 (defrecord Card
   [id
    idList
@@ -18,8 +21,15 @@
 (defrecord List
   [id
    name
-   idBoard])
+   idBoard]
 
+  listId
+  (list-id [_] id))
+
+
+(extend-protocol listId
+  String
+  (list-id [x] x))
 
 
 
