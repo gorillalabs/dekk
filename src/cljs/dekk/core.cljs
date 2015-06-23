@@ -49,4 +49,5 @@
 (defn init! []
   (hook-browser-navigation!)
   (re-frame/dispatch [:initialise-db])
+  (re-frame/dispatch [:load-cards])
   (reagent/render-component [current-page] (.getElementById js/document "app")))

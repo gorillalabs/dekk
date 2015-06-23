@@ -1,6 +1,7 @@
 (ns dekk.handlers
   (:require [ajax.core :refer [GET]]
             [re-frame.core :refer [register-handler, dispatch]]
+            [re-frame.utils :as util]
             [re-frame.middleware :refer [undoable]]))
 
 
@@ -11,9 +12,38 @@
     [app-state board-id]
     (assoc-in app-state [:board-id] board-id)))
 
+(register-handler
+  :process-phones-response
+  (fn
+    ;; store the response of fetching the phones list in the phones attribute of the db
+    [app-state [_ response]]
+    (assoc-in app-state [:cards] response)))
+
+(register-handler
+  :process-phones-bad-response
+  (fn
+    ;; log a bad response fetching the phones list
+    [app-state [_ response]]
+    (println "Error getting phone list response")
+    (println response)
+    app-state))
+
+(register-handler
+  :load-cards
+  (fn
+    ;; Fetch the list of phones and process the response
+    [app-state _]
+    (GET "cards"
+         {:handler         #(dispatch [:process-cards-response %1])
+          :error-handler   #(dispatch [:process-cards-bad-response %1])
+          :response-format :json
+          :keywords?       true})
+    (util/log "App-state after load-cards: " app-state)
+    app-state))
 
 (register-handler
   :initialise-db
+  ; TODO call load-cards instead
   (fn
     [_ _]
     {:boards       {"example-board"
