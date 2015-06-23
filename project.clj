@@ -20,7 +20,10 @@
                            [environ "1.0.0"]
                            [re-frame "0.4.0"]
                            [re-com "0.5.4"]
-                           [cljs-ajax "0.3.10"]]
+                           [cljs-ajax "0.3.10"]
+                           [cheshire "5.5.0"]                         ;; json support
+                           [clj-jgit "0.8.8"]
+                           ]
 
             :plugins [
                       [lein-cljsbuild "1.0.4"]
