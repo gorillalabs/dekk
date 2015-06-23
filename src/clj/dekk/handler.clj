@@ -12,6 +12,10 @@
            (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
            (GET "/cards" []
              (pr-str (base-access/cards)))
+           (GET "/lists" []
+             (pr-str (base-access/lists)))
+           (GET "/board" []
+             (pr-str (base-access/board)))
            (resources "/")
            (not-found "Not Found"))
 
