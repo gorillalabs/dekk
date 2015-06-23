@@ -3,29 +3,8 @@
             [clj-jgit.porcelain :as git]))
 
 
-(def dataRepo "dataRepo/")
-(def board "board.json")
-(def cards "cards.json")
-(def lists "lists.json")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Data model
 
-(defrecord Card
-  [id
-   idList
-   idBoard
-   name
-   desc
-   closed])
-
-(defrecord Board
-  [id])
-
-(defrecord List
-  [id
-   name
-   idBoard])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Read API
@@ -55,53 +34,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Git interfacing
 
-(defn repo []
-  (git/load-repo dataRepo))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ability to read/write files
-
-(defn read-from-json [what]
-  (json/parse-stream
-    (clojure.java.io/reader (str "./" dataRepo what))
-    true))
-
-
-(defn read-multiple [convert-fn what]
-  (mapv convert-fn
-        (read-from-json what)))
-
-
-
-(defn read-board []
-  (map->Board
-    (read-from-json board)))
-
-(defn read-lists []
-  (read-multiple map->List lists))
-
-(defn read-cards []
-  (read-multiple map->Card cards))
 
 
 
 
-
-
-;; this writes all the cards to foo.json
-(defn write-cards [cards]
-  (json/generate-stream
-    cards
-    (clojure.java.io/writer "./testdata/foo.json")
-    {:pretty true})
-  )
-
-(defn add-card [cards card]
-  (write-cards
-    (conj cards card))
-  (git/git-add (repo) "/foo.json")
-  (git/git-commit (repo) (str "Added card " (:id card) ", " (:name card)))
-  )
 
 
 
