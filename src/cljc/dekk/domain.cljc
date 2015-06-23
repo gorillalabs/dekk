@@ -1,5 +1,5 @@
 (ns dekk.domain
-  )
+  #?(:clj (:require [miner.tagged :as tag])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Data model
