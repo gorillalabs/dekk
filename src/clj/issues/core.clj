@@ -1,10 +1,6 @@
 (ns issues.core
-  (:require [cheshire.core :as json]
-            [clj-jgit.porcelain :as git]))
-
-
-
-
+  (:require [dekk.card-handling :as card-handling]
+            [dekk.domain :as domain]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Read API
@@ -31,23 +27,8 @@
   ;; this should be a generic method, to differentiate based upon change: move, comment, ...
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Git interfacing
-
-
-
-
-
-
-
-
-
-
-
 (defn alter-board []
-    (add-card (read-cards) (map->Card {:id 'foo})))
-
-
+    (card-handling/add-card (domain/map->Card {:id 'foo})))
 
 
 ;;;;
