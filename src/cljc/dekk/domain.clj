@@ -1,5 +1,4 @@
-(ns dekk.domain
-  (:require [dekk.json-fs :as json-fs]))
+(ns dekk.domain)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Data model
@@ -33,12 +32,3 @@
 
 
 
-(defn board []
-  (map->Board
-    (json-fs/read-from-json board)))
-
-(defn lists []
-  (json-fs/read-multiple map->List lists))
-
-(defn cards []
-  (json-fs/read-multiple map->Card cards))
