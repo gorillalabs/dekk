@@ -2,7 +2,9 @@
   (:require [ajax.core :refer [GET]]
             [re-frame.core :refer [register-handler, dispatch]]
             [re-frame.utils :as util]
-            [re-frame.middleware :refer [undoable]]))
+            [re-frame.middleware :refer [undoable]]
+            [cljs.reader :refer [read-string, register-tag-parser!]]
+            [dekk.domain :refer [map->Card]]))
 
 
 (register-handler
@@ -13,14 +15,17 @@
     (assoc-in app-state [:board-id] board-id)))
 
 (register-handler
-  :process-phones-response
+  :process-cards-response
   (fn
     ;; store the response of fetching the phones list in the phones attribute of the db
     [app-state [_ response]]
-    (assoc-in app-state [:cards] response)))
+    (register-tag-parser! "dekk.domain/Card" map->Card)
+    (util/log "response" response)
+    (assoc-in app-state [:cards]
+              (read-string {:body response}))))
 
 (register-handler
-  :process-phones-bad-response
+  :process-cards-bad-response
   (fn
     ;; log a bad response fetching the phones list
     [app-state [_ response]]
@@ -33,6 +38,7 @@
   (fn
     ;; Fetch the list of phones and process the response
     [app-state _]
+    (util/log "load-cards")
     (GET "cards"
          {:handler         #(dispatch [:process-cards-response %1])
           :error-handler   #(dispatch [:process-cards-bad-response %1])
