@@ -4,7 +4,7 @@
             :license {:name "Eclipse Public License"
                       :url  "http://www.eclipse.org/legal/epl-v10.html"}
 
-            :source-paths ["src/clj" "src/cljs"]
+            :source-paths ["src/clj" "src/cljc" "src/cljs"]
 
             :dependencies [[org.clojure/clojure "1.7.0-RC2"]
                            [cljsjs/react "0.13.3-0"]
@@ -46,7 +46,7 @@
             :minify-assets {:assets {"resources/public/css/site.min.css"
                                      "resources/public/css/site.css"}}
 
-            :cljsbuild {:builds {:app {:source-paths ["src/cljs"]
+            :cljsbuild {:builds {:app {:source-paths ["src/cljs" "src/cljc"]
                                        :compiler     {:output-to     "resources/public/js/app.js"
                                                       :output-dir    "resources/public/js/out"
                                                       :asset-path    "js/out"
