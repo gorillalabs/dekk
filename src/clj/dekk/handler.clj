@@ -4,10 +4,14 @@
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [selmer.parser :refer [render-file]]
             [prone.middleware :refer [wrap-exceptions]]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [dekk.base-access :as base-access]
+            [clojure.edn :as edn]))
 
 (defroutes routes
            (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
+           (GET "/cards" []
+             (pr-str (base-access/cards)))
            (resources "/")
            (not-found "Not Found"))
 
