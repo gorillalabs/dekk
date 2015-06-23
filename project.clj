@@ -23,7 +23,7 @@
                            [cljs-ajax "0.3.13"]
                            [cheshire "5.5.0"]                         ;; json support
                            [clj-jgit "0.8.8"]
-                           ]
+                           [com.velisco/tagged "0.3.0"]]
 
             :plugins [
                       [lein-cljsbuild "1.0.4"]
