@@ -60,8 +60,7 @@
         (json/parse-stream
           (clojure.java.io/reader "./testdata/cards.json")
           true
-          ))
-  )
+          )))
 
 ;; this writes all the cards to foo.json
 (defn write-cards [cards]
