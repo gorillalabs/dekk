@@ -18,14 +18,6 @@
   (mapv convert-fn
         (read-from-json what)))
 
-
-
-
-
-
-
-
-
 ;; this writes all the cards to foo.json
 (defn write-cards [cards]
   (json/generate-stream
