@@ -3,6 +3,11 @@
             [clj-jgit.porcelain :as git]))
 
 
+(def dataRepo "dataRepo/")
+(def board "board.json")
+(def cards "cards.json")
+(def lists "lists.json")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Data model
 
@@ -24,6 +29,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Read API
+
+(defn get-board []
+  )
 
 (defn get-lists [boardId]
   )
@@ -48,19 +56,33 @@
 ;; Git interfacing
 
 (defn repo []
-  (git/load-repo "testdata/"))
+  (git/load-repo dataRepo))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ability to read/write files
 
+(defn read-from-json [what]
+  (json/parse-stream
+    (clojure.java.io/reader (str "./" dataRepo what))
+    true))
 
-;; this does read the first card from trello, populating all fields given in json.
+(defn read-board []
+  (map->Board
+    (read-from-json board)))
+
+(defn read-multiple [convert-fn what]
+  (mapv convert-fn
+        (read-from-json what)))
+
 (defn read-cards []
-  (mapv map->Card
-        (json/parse-stream
-          (clojure.java.io/reader "./testdata/cards.json")
-          true
-          )))
+  (read-multiple map->Card cards))
+
+(defn read-lists []
+  (read-multiple map->List lists))
+
+
+
+
 
 ;; this writes all the cards to foo.json
 (defn write-cards [cards]
