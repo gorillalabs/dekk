@@ -6,21 +6,21 @@
 
             :source-paths ["src/clj" "src/cljs"]
 
-            :dependencies [[org.clojure/clojure "1.6.0"]
-                           [cljsjs/react "0.12.2-5"]
+            :dependencies [[org.clojure/clojure "1.7.0-RC2"]
+                           [cljsjs/react "0.13.3-0"]
                            [reagent "0.5.0"]
-                           [reagent-utils "0.1.2"]
+                           [reagent-utils "0.1.5"]
                            [secretary "1.2.3"]
-                           [org.clojure/clojurescript "0.0-3211" :scope "provided"]
-                           [ring "1.3.2"]
-                           [ring/ring-defaults "0.1.3"]
-                           [prone "0.8.0"]
-                           [compojure "1.3.2"]
-                           [selmer "0.8.0"]
+                           [org.clojure/clojurescript "0.0-3308" :scope "provided"]
+                           [ring "1.4.0-RC1"]
+                           [ring/ring-defaults "0.1.5"]
+                           [prone "0.8.2"]
+                           [compojure "1.3.4"]
+                           [selmer "0.8.2"]
                            [environ "1.0.0"]
-                           [re-frame "0.4.0"]
+                           [re-frame "0.4.1"]
                            [re-com "0.5.4"]
-                           [cljs-ajax "0.3.10"]
+                           [cljs-ajax "0.3.13"]
                            [cheshire "5.5.0"]                         ;; json support
                            [clj-jgit "0.8.8"]
                            ]
@@ -29,7 +29,8 @@
                       [lein-cljsbuild "1.0.4"]
                       [lein-environ "1.0.0"]
                       [lein-ring "0.9.1"]
-                      [lein-asset-minifier "0.2.2"]]
+                      [lein-asset-minifier "0.2.2"]
+                      [lein-ancient "0.6.7"]]
 
             :ring {:handler      dekk.handler/app
                    :uberwar-name "dekk.war"}
@@ -58,14 +59,14 @@
                                     :dependencies [[ring-mock "0.1.5"]
                                                    [ring/ring-devel "1.3.2"]
                                                    [leiningen "2.5.1"]
-                                                   [figwheel "0.2.6"]
-                                                   [weasel "0.6.0"]
-                                                   [com.cemerick/piggieback "0.2.0"]
+                                                   [figwheel "0.3.3"]
+                                                   [weasel "0.7.0"]
+                                                   [com.cemerick/piggieback "0.2.1"]
                                                    [org.clojure/tools.nrepl "0.2.10"]
-                                                   [pjstadig/humane-test-output "0.6.0"]]
+                                                   [pjstadig/humane-test-output "0.7.0"]]
 
                                     :source-paths ["env/dev/clj"]
-                                    :plugins      [[lein-figwheel "0.2.6"]]
+                                    :plugins      [[lein-figwheel "0.3.3"]]
 
                                     :injections   [(require 'pjstadig.humane-test-output)
                                                    (pjstadig.humane-test-output/activate!)]
