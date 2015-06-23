@@ -66,19 +66,23 @@
     (clojure.java.io/reader (str "./" dataRepo what))
     true))
 
-(defn read-board []
-  (map->Board
-    (read-from-json board)))
 
 (defn read-multiple [convert-fn what]
   (mapv convert-fn
         (read-from-json what)))
 
-(defn read-cards []
-  (read-multiple map->Card cards))
+
+
+(defn read-board []
+  (map->Board
+    (read-from-json board)))
 
 (defn read-lists []
   (read-multiple map->List lists))
+
+(defn read-cards []
+  (read-multiple map->Card cards))
+
 
 
 
