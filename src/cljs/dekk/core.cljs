@@ -5,7 +5,7 @@
             [secretary.core :as secretary :include-macros true]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [re-frame.core :as re-frame])
+            [re-frame.core :refer [dispatch]])
   (:require-macros [reagent.ratom :refer [reaction]])
   (:import goog.History))
 
@@ -19,7 +19,7 @@
 (secretary/defroute "/boards/:board-id" {:as params}
                     (session/put! :current-page #'board-page)
                     (session/put! :params params)
-                    (re-frame/dispatch [:select-board (:board-id params)]))
+                    (dispatch [:select-board (:board-id params)]))
 
 (defn redirect-to
   [resource]
@@ -48,6 +48,8 @@
 
 (defn init! []
   (hook-browser-navigation!)
-  (re-frame/dispatch [:initialise-db])
-  (re-frame/dispatch [:load-cards])
+  (dispatch [:init-app-state])
+  (dispatch [:load-board])
+  (dispatch [:load-lists])
+  (dispatch [:load-cards])
   (reagent/render-component [current-page] (.getElementById js/document "app")))

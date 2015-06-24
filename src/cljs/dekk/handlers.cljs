@@ -6,51 +6,59 @@
             [cljs.reader :refer [read-string, register-tag-parser!]]
             [dekk.domain :as domain]))
 
-(util/log "Hello, World!")
+(register-handler
+  :log-error
+  (fn
+    ;; log a bad response with an error message
+    [app-state [_ response msg]]
+    (util/error msg " - response: " + response)
+    app-state))
 
 (register-handler
-  :select-board
+  :assoc-in-app-state
   (fn
-    ;; store info for the specific phone-id in the db
-    [app-state board-id]
-    (assoc-in app-state [:board-id] board-id)))
+    ;; store the response under a given path in the app state
+    [app-state [_ response path]]
+    (assoc-in app-state path response)))
 
 (register-handler
-  :process-cards-response
+  :load-board
   (fn
-    ;; store the response of fetching the phones list in the phones attribute of the db
-    [app-state [_ response]]
-    (util/log "response" response)
-    (assoc-in app-state [:cards]
-              response)))
-
-(register-handler
-  :process-cards-bad-response
-  (fn
-    ;; log a bad response fetching the phones list
-    [app-state [_ response]]
-    (println "Error getting phone list response")
-    (println response)
+    ;; Fetch the board and process the response
+    [app-state _]
+    (GET "board"
+         {:handler         #(dispatch [:assoc-in-app-state %1 [:board]])
+          :error-handler   #(dispatch [:log-error %1 "error loading board from server"])
+          :response-format :edn})
     app-state))
 
 (register-handler
   :load-cards
   (fn
-    ;; Fetch the list of phones and process the response
+    ;; Fetch the lists and process the response
     [app-state _]
-    (util/log "load-cards")
-    (GET "cards"
-         {:handler         #(dispatch [:process-cards-response %1])
-          :error-handler   #(dispatch [:process-cards-bad-response %1])
+    (GET "lists"
+         {:handler         #(dispatch [:assoc-in-app-state %1 [:lists]])
+          :error-handler   #(dispatch [:log-error %1 "error loading lists from server"])
           :response-format :edn})
-    (util/log "App-state after load-cards: " app-state)
     app-state))
 
 (register-handler
-  :initialise-db
-  ; TODO call load-cards instead
+  :load-cards
+  (fn
+    ;; Fetch all cards and process the response
+    [app-state _]
+    (GET "cards"
+         {:handler         #(dispatch [:assoc-in-app-state %1 [:cards]])
+          :error-handler   #(dispatch [:log-error %1 "error loading cards from server"])
+          :response-format :edn})
+    app-state))
+
+(register-handler
+  :init-app-state
   (fn
     [_ _]
+    ;; TODO remove :boards substructure
     {:boards       {"example-board"
                     {:name  "Example Board"
                      :lists {"list-1" {:name  "Backlog"

@@ -18,6 +18,11 @@
     (reaction (:boards @db))))
 
 (register-sub
+  :lists
+  (fn [db]
+    (reaction (:boards @db))))
+
+(register-sub
   :board
   (fn [db [_ board-id]]
     (reaction (get-in @db [:boards board-id]))))
