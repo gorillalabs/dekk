@@ -19,7 +19,8 @@
 (secretary/defroute "/boards/:board-id" {:as params}
                     (session/put! :current-page #'board-page)
                     (session/put! :params params)
-                    (dispatch [:select-board (:board-id params)]))
+                    ;;(dispatch [:select-board (:board-id params)]) TODO implement when switching boards will be possible
+                    )
 
 (defn redirect-to
   [resource]
@@ -49,7 +50,7 @@
 (defn init! []
   (hook-browser-navigation!)
   (dispatch [:init-app-state])
-  (dispatch [:load-board])
+  (dispatch [:load-boards])
   (dispatch [:load-lists])
   (dispatch [:load-cards])
   (reagent/render-component [current-page] (.getElementById js/document "app")))

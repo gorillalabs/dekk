@@ -47,14 +47,14 @@
    :style {:border "1px solid lightgrey"}
    :gap "10px"
    :children
-   [(for [[card-key card-val] @cards]
-      ^{:key card-key}
+   [(for [card @cards]
+      ^{:key (:id card)}
       [v-box
        :style {:border "1px solid lightgrey"}
        :attr {:draggable true}
        :children
-       [[box :child (:name card-val "")]
-        [box :child (:description card-val "")]]])]])
+       [[box :child (:name card "")]
+        [box :child (:desc card "")]]])]])
 
 (defn lists-box
   "box to display some lists"
@@ -67,13 +67,15 @@
      :style {:border "1px solid lightgrey"}
      :gap "10px"
      :children
-     [(for [[list-key list-val] @lists]
-        (let [cards (reaction (:cards list-val))]
-          ^{:key list-key}
+     [(for [list @lists]
+        (let [board-id (:idBoard list)
+              list-id (:id list)
+              cards (subscribe [:cards board-id list-id])]
+          ^{:key list-id}
           [v-box
            :style {:border "1px solid lightgrey"}
            :children
-           [[box :child (:name list-val)]
+           [[box :child (:name list "")]
             [cards-box cards]]]))]]]])
 
 (defn board-page
@@ -81,7 +83,7 @@
   [{board-id :board-id}]
   (let [board (subscribe [:board board-id])
         board-name (reaction (:name @board))
-        lists (reaction (:lists @board))]
+        lists (subscribe [:lists board-id])]
 
     [v-box :children
      [[v-box :children [[:span "Board"]

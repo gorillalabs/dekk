@@ -17,30 +17,31 @@
 (register-handler
   :assoc-in-app-state
   (fn
-    ;; store the response under a given path in the app state
-    [app-state [_ response path]]
-    (assoc-in app-state path response)))
+    ;; store the value under a given path in the app state
+    [app-state [_ path value]]
+    (assoc-in app-state path value)))
+
 
 (register-handler
-  :load-board
+  :load-boards
   (fn
     ;; Fetch the board and process the response
     [app-state _]
+    (cljs.reader/register-tag-parser! "dekk.domain.Board" domain/map->Board)
     (GET "board"
-         {:handler         #(dispatch [:assoc-in-app-state %1 [:board]])
-          :error-handler   #(dispatch [:log-error %1 "error loading board from server"])
-          :response-format :edn})
+         {:handler       #(dispatch [:assoc-in-app-state [:boards] (vector (cljs.reader/read-string %1))])
+          :error-handler #(dispatch [:log-error %1 "error loading board from server"])})
     app-state))
 
 (register-handler
-  :load-cards
+  :load-lists
   (fn
     ;; Fetch the lists and process the response
     [app-state _]
+    (cljs.reader/register-tag-parser! "dekk.domain.DekkList" domain/map->DekkList)
     (GET "lists"
-         {:handler         #(dispatch [:assoc-in-app-state %1 [:lists]])
-          :error-handler   #(dispatch [:log-error %1 "error loading lists from server"])
-          :response-format :edn})
+         {:handler       #(dispatch [:assoc-in-app-state [:lists] (cljs.reader/read-string %1)])
+          :error-handler #(dispatch [:log-error %1 "error loading lists from server"])})
     app-state))
 
 (register-handler
@@ -48,29 +49,17 @@
   (fn
     ;; Fetch all cards and process the response
     [app-state _]
+    (cljs.reader/register-tag-parser! "dekk.domain.Card" domain/map->Card)
     (GET "cards"
-         {:handler         #(dispatch [:assoc-in-app-state %1 [:cards]])
-          :error-handler   #(dispatch [:log-error %1 "error loading cards from server"])
-          :response-format :edn})
+         {:handler       #(dispatch [:assoc-in-app-state [:cards] (cljs.reader/read-string %1)])
+          :error-handler #(dispatch [:log-error %1 "error loading cards from server"])})
     app-state))
 
 (register-handler
   :init-app-state
   (fn
     [_ _]
-    ;; TODO remove :boards substructure
-    {:boards       {"example-board"
-                    {:name  "Example Board"
-                     :lists {"list-1" {:name  "Backlog"
-                                       :cards {"card-1" {:name        "Bier kaufen"
-                                                         :description "Ein Sixpack oder zwei"
-                                                         :closed      false}
-                                               "card-2" {:name "Chips kaufen"}}}
-                             "list-2" {:name "To Do"}
-                             "list-3" {:name "Doing"}
-                             "list-4" {:name "Done"}}}}
-     :board-id     "example-board"
-     :search-input ""
+    {:search-input ""
      :order-prop   "name"}))
 
 (register-handler
