@@ -1,9 +1,12 @@
 (ns dekk.domain
-  #?(:clj (:require [miner.tagged :as tag])))
+  #?(:clj
+     (:require [miner.tagged :as tag])
+     :cljs
+     (:require [cljs.reader :refer [register-tag-parser!]])
+     ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Data model
-
 (defprotocol listId
   (list-id [item]))
 
@@ -18,17 +21,11 @@
   listId
   (list-id [_] idList))
 
-#?(:clj (defmethod print-method Card [this w]
-  (tag/pr-tagged-record-on this w)))
 
 (defrecord Board
   [id])
 
-#?(:clj (defmethod print-method Board [this w]
-  (tag/pr-tagged-record-on this w)))
-
-
-(defrecord List
+(defrecord DekkList
   [id
    name
    idBoard]
@@ -36,19 +33,20 @@
   listId
   (list-id [_] id))
 
-#?(:clj (defmethod print-method List [this w]
-  (tag/pr-tagged-record-on this w)))
 
 
 
-(extend-protocol listId
-  String
-  (list-id [x] x))
+#?(:clj
+   (extend-protocol listId
+     String
+     (list-id [x] x)))
 
 
-
+#?(:cljs
+   (register-tag-parser! "dekk.domain.Card" dekk.domain/map->Card))
 
 (defn cards-by-list [list]
   (filter (fn [card]
             (= (list-id card)
                (list-id list)))))
+

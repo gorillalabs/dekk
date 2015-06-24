@@ -4,8 +4,9 @@
             [re-frame.utils :as util]
             [re-frame.middleware :refer [undoable]]
             [cljs.reader :refer [read-string, register-tag-parser!]]
-            [dekk.domain :refer [map->Card]]))
+            [dekk.domain :as domain]))
 
+(util/log "Hello, World!")
 
 (register-handler
   :select-board
@@ -19,10 +20,9 @@
   (fn
     ;; store the response of fetching the phones list in the phones attribute of the db
     [app-state [_ response]]
-    (register-tag-parser! "dekk.domain/Card" map->Card)
     (util/log "response" response)
     (assoc-in app-state [:cards]
-              (read-string {:body response}))))
+              response)))
 
 (register-handler
   :process-cards-bad-response
@@ -42,8 +42,7 @@
     (GET "cards"
          {:handler         #(dispatch [:process-cards-response %1])
           :error-handler   #(dispatch [:process-cards-bad-response %1])
-          :response-format :json
-          :keywords?       true})
+          :response-format :edn})
     (util/log "App-state after load-cards: " app-state)
     app-state))
 

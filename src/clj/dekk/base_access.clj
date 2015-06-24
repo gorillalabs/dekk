@@ -8,7 +8,7 @@
     (json-fs/read-from-json globals/board)))
 
 (defn lists []
-  (json-fs/read-multiple domain/map->List globals/lists))
+  (json-fs/read-multiple domain/map->DekkList globals/lists))
 
 (defn cards []
   (json-fs/read-multiple domain/map->Card globals/cards))
