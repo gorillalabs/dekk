@@ -3,7 +3,8 @@
             dekk.handlers
             [re-frame.core :refer [subscribe, dispatch]]
             [re-com.core :refer [button, box, h-box, v-box, single-dropdown, input-text]]
-            [re-frame.utils :refer [log]])
+            [re-frame.utils :refer [log]]
+            [dekk.domain :as domain])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
 (defn search-component
@@ -80,13 +81,16 @@
 
 (defn board-page
   "top level component for the phone page"
-  [{board-id :board-id}]
-  (let [board (subscribe [:board board-id])
+  [{board-link :boardLink}]
+  (let [board (subscribe [:board-by-shortLink board-link])]
+    (println "board-page for:" board)
+    (when board
+    (let [
         board-name (reaction (:name @board))
-        lists (subscribe [:lists board-id])]
+        lists (subscribe [:lists (domain/board-id @board)])]
 
     [v-box :children
      [[v-box :children [[:span "Board"]
                         [:span @board-name]]]
       [lists-box lists]
-      ]]))
+      ]]))))

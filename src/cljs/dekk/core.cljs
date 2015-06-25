@@ -5,7 +5,7 @@
             [secretary.core :as secretary :include-macros true]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [re-frame.core :refer [dispatch]])
+            [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [reagent.ratom :refer [reaction]])
   (:import goog.History))
 
@@ -16,11 +16,17 @@
 (secretary/defroute "/boards" []
                     (session/put! :current-page #'home-page))
 
-(secretary/defroute "/boards/:board-id" {:as params}
+(secretary/defroute "/boards/:boardLink" {:as params}
                     (session/put! :current-page #'board-page)
                     (session/put! :params params)
-                    ;;(dispatch [:select-board (:board-id params)]) TODO implement when switching boards will be possible
-                    )
+
+
+                    #_(let [board (subscribe [:board-by-shortLink (:shortLink params)])]
+                      (println "Finding board: " board)
+                      (dispatch [:assoc-in-app-state [:board] board])
+                      (dispatch [:load-lists board])
+                      (dispatch [:load-cards board])
+                      ))
 
 (defn redirect-to
   [resource]
@@ -49,8 +55,7 @@
 
 (defn init! []
   (hook-browser-navigation!)
+  (println "INIT!")
   (dispatch [:init-app-state])
   (dispatch [:load-boards])
-  (dispatch [:load-lists])
-  (dispatch [:load-cards])
   (reagent/render-component [current-page] (.getElementById js/document "app")))

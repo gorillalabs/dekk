@@ -27,9 +27,9 @@
   (fn
     ;; Fetch the board and process the response
     [app-state _]
-    (cljs.reader/register-tag-parser! "dekk.domain.Board" domain/map->Board)
-    (GET "board"
-         {:handler       #(dispatch [:assoc-in-app-state [:boards] (vector (cljs.reader/read-string %1))])
+    (println "load-boards")
+    (GET "boards"
+         {:handler       #(dispatch [:assoc-in-app-state [:boards] (cljs.reader/read-string %1)])
           :error-handler #(dispatch [:log-error %1 "error loading board from server"])})
     app-state))
 
@@ -37,9 +37,9 @@
   :load-lists
   (fn
     ;; Fetch the lists and process the response
-    [app-state _]
-    (cljs.reader/register-tag-parser! "dekk.domain.DekkList" domain/map->DekkList)
-    (GET "lists"
+    [app-state board]
+    (println "load-lists:" app-state board)
+    (GET (str "lists/" (domain/board-id board))
          {:handler       #(dispatch [:assoc-in-app-state [:lists] (cljs.reader/read-string %1)])
           :error-handler #(dispatch [:log-error %1 "error loading lists from server"])})
     app-state))
@@ -48,9 +48,8 @@
   :load-cards
   (fn
     ;; Fetch all cards and process the response
-    [app-state _]
-    (cljs.reader/register-tag-parser! "dekk.domain.Card" domain/map->Card)
-    (GET "cards"
+    [app-state board]
+    (GET (str "cards/" (domain/board-id board))
          {:handler       #(dispatch [:assoc-in-app-state [:cards] (cljs.reader/read-string %1)])
           :error-handler #(dispatch [:log-error %1 "error loading cards from server"])})
     app-state))

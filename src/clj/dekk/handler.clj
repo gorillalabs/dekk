@@ -10,12 +10,12 @@
 
 (defroutes routes
            (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
-           (GET "/cards" []
-             (pr-str (base-access/cards)))
-           (GET "/lists" []
-             (pr-str (base-access/lists)))
-           (GET "/board" []
-             (pr-str (base-access/board)))
+           (GET "/cards/:boardId" [boardId]
+             (pr-str (base-access/cards boardId)))
+           (GET "/lists/:boardId" [boardId]
+             (pr-str (base-access/lists boardId)))
+           (GET "/boards" []
+             (pr-str (base-access/boards)))
            (resources "/")
            (not-found "Not Found"))
 

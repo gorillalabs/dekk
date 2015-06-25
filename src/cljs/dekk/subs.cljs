@@ -27,12 +27,15 @@
     (reaction (filter #(= (:idBoard %) board-id)
                       (:lists @app-state)))))
 
+(defn board-by-shortLink [boards shortLink]
+  (first (filter #(= (:shortLink %)
+              shortLink)
+          boards)))
+
 (register-sub
-  :board
-  (fn [app-state [_ board-id]]
-    (reaction (filter #(= (:id %) board-id)
-                      (:boards @app-state))))
-  )
+  :board-by-shortLink
+  (fn [app-state [_ shortLink]]
+    (reaction (board-by-shortLink (:boards @app-state) shortLink))))
 
 
 

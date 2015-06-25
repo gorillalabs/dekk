@@ -10,6 +10,9 @@
 (defprotocol listId
   (list-id [item]))
 
+(defprotocol boardId
+  (board-id [item]))
+
 (defrecord Card
   [id
    idList
@@ -19,11 +22,17 @@
    closed]
 
   listId
-  (list-id [_] idList))
+  (list-id [_] idList)
+
+  boardId
+  (board-id [_] idBoard))
 
 
 (defrecord Board
-  [id])
+  [id]
+  boardId
+  (board-id [_] id)
+  )
 
 (defrecord DekkList
   [id
@@ -31,7 +40,10 @@
    idBoard]
 
   listId
-  (list-id [_] id))
+  (list-id [_] id)
+
+  boardId
+  (board-id [_] idBoard))
 
 
 
@@ -42,11 +54,14 @@
      (list-id [x] x)))
 
 
-#?(:cljs
-   (register-tag-parser! "dekk.domain.Card" dekk.domain/map->Card))
+#?(:cljs (do
+           (register-tag-parser! "dekk.domain.Card" dekk.domain/map->Card)
+           (register-tag-parser! "dekk.domain.DekkList" dekk.domain/map->DekkList)
+           (register-tag-parser! "dekk.domain.Board" dekk.domain/map->Board)))
 
 (defn cards-by-list [list]
   (filter (fn [card]
             (= (list-id card)
                (list-id list)))))
+
 
