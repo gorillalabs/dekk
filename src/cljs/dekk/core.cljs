@@ -23,7 +23,7 @@
 
                     #_(let [board (subscribe [:board-by-shortLink (:shortLink params)])]
                       (println "Finding board: " board)
-                      (dispatch [:assoc-in-app-state [:board] board])
+
                       (dispatch [:load-lists board])
                       (dispatch [:load-cards board])
                       ))

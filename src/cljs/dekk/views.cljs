@@ -79,18 +79,25 @@
            [[box :child (:name list "")]
             [cards-box cards]]]))]]]])
 
+(defn board-by-shortLink [boards shortLink]
+  (first (filter #(= (:shortLink %)
+                     shortLink)
+                 boards)))
+
 (defn board-page
   "top level component for the phone page"
   [{board-link :boardLink}]
-  (let [board (subscribe [:board-by-shortLink board-link])]
+  (let [boards (subscribe [:boards])
+        board (board-by-shortLink @boards board-link)]
     (println "board-page for:" board)
     (when board
-    (let [
-        board-name (reaction (:name @board))
-        lists (subscribe [:lists (domain/board-id @board)])]
+      (let [board-name (reaction (:name @board))
+            _ (println board-name ", " (domain/board-id @board))
 
-    [v-box :children
-     [[v-box :children [[:span "Board"]
-                        [:span @board-name]]]
-      [lists-box lists]
-      ]]))))
+            lists (subscribe [:lists (domain/board-id @board)])]
+
+        [v-box :children
+         [[v-box :children [[:span "Board"]
+                            [:span @board-name]]]
+          [lists-box lists]
+          ]]))))
